@@ -1,0 +1,1077 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dominicana ViVa | Patrimonio Taíno</title>
+  
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Hojas de Estilo de Leaflet.js (Para el Mapa Interactivo) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <style>
+    :root {
+      --red-primary: #C50F0F;
+      --navy-primary: #051342;
+      --bg-light: #FFFFFF;
+      --text-dark: #1E293B;
+      --font-main: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* 1. HEADER / NAVEGACIÓN */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background-color: var(--bg-light);
+      border-bottom: 1px solid #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .logo-red { color: var(--red-primary); }
+    .logo-blue { color: var(--navy-primary); }
+
+    .nav-menu {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    .nav-menu a:hover {
+      color: var(--red-primary);
+    }
+
+    /* 2. HERO SECTION */
+    .hero-section {
+      position: relative;
+      min-height: 480px;
+      display: flex;
+      align-items: center;
+      padding: 3rem 5%;
+      background: linear-gradient(
+          rgba(0, 0, 0, 0.3),
+          rgba(0, 0, 0, 0.4)
+      ), url('img/image.png') center/cover no-repeat;
+    }
+
+    .hero-content {
+      max-width: 600px;
+      color: #FFFFFF;
+    }
+
+    .hero-title {
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .hero-title strong {
+      font-weight: 800;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 1.7rem;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+      border: 2px solid transparent;
+    }
+
+    .btn:hover {
+      opacity: 1;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-red { background-color: var(--red-primary); color: #FFFFFF; }
+    .btn-red:hover { background-color: #A00C0C; box-shadow: 0 8px 18px rgba(197, 15, 15, 0.4); }
+    .btn-navy { background-color: var(--navy-primary); color: #FFFFFF; }
+    .btn-navy:hover { background-color: #0A1E5C; box-shadow: 0 8px 18px rgba(5, 19, 66, 0.4); }
+    .btn-outline { background-color: transparent; color: #FFFFFF; border-color: rgba(255, 255, 255, 0.8); }
+    .btn-outline:hover { background-color: #FFFFFF; color: var(--navy-primary); }
+
+    /* 3. MAPA MENTAL MINIMALISTA */
+    .mindmap-section {
+      max-width: 1100px;
+      margin: 3rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    .mindmap {
+      position: relative;
+      height: 540px;
+    }
+
+    .mindmap-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .mindmap-lines line {
+      stroke: var(--red-primary);
+      stroke-opacity: 0.32;
+      stroke-width: 1.5;
+    }
+
+    .mindmap-hub {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background-color: var(--navy-primary);
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.75rem;
+      z-index: 2;
+      box-shadow: 0 16px 34px rgba(5, 19, 66, 0.28);
+    }
+
+    .mindmap-hub h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .mindmap-hub p {
+      font-size: 0.82rem;
+      color: #CBD5E1;
+      margin-top: 0.45rem;
+      line-height: 1.45;
+    }
+
+    .mindmap-node {
+      position: absolute;
+      max-width: 240px;
+      background-color: var(--red-primary);
+      color: #FFFFFF;
+      padding: 0.9rem 1.15rem;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.4;
+      box-shadow: 0 8px 18px rgba(197, 15, 15, 0.22);
+      z-index: 2;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .mindmap-node:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 14px 26px rgba(197, 15, 15, 0.3);
+    }
+
+    /* SECCIÓN MUSEO DIGITAL 3D */
+    .museum3d-section {
+      max-width: 1100px;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .museum3d-text h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .museum3d-text .museum3d-sub {
+      color: var(--red-primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+
+    .museum3d-text p {
+      color: #64748B;
+      font-size: 0.98rem;
+      line-height: 1.65;
+      margin-bottom: 1.1rem;
+    }
+
+    .museum3d-facts {
+      list-style: none;
+      margin: 0 0 1.5rem;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .museum3d-facts li {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--text-dark);
+    }
+
+    .museum3d-facts li::before {
+      content: "";
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--red-primary);
+      margin-top: 0.5em;
+    }
+
+    .model3d-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 16px 34px rgba(5, 19, 66, 0.22);
+      background: linear-gradient(160deg, #0A1E5C 0%, #051342 100%);
+      height: 460px;
+    }
+
+    #taino3d {
+      width: 100%;
+      height: 100%;
+    }
+
+    #taino3d canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .model3d-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #CBD5E1;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 3;
+      background: linear-gradient(160deg, #0A1E5C 0%, #051342 100%);
+    }
+
+    .model3d-loading .spinner {
+      width: 38px;
+      height: 38px;
+      border: 4px solid rgba(255, 255, 255, 0.18);
+      border-top-color: var(--red-primary);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 0.9rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .model3d-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--navy-primary);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      z-index: 4;
+    }
+
+    .model3d-hint {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--navy-primary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      z-index: 4;
+    }
+
+    /* 4. MAPA INTERACTIVO DE RELIEVE */
+    .map-interactive-section {
+      max-width: 1100px;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+
+    .map-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .map-subtitle {
+      color: #64748B;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #rd-map {
+      width: 100%;
+      height: 520px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(5, 19, 66, 0.12);
+      border: 1px solid #E2E8F0;
+      z-index: 1;
+    }
+
+    .popup-card h4 {
+      color: var(--red-primary);
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .popup-card p {
+      color: #1E293B;
+      font-size: 0.85rem;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    /* 5. FOOTER */
+    .footer {
+      background-color: var(--navy-primary);
+      color: #FFFFFF;
+      padding: 3rem 5% 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .footer-brand .logo { font-size: 1.4rem; }
+    .footer-brand p {
+      font-size: 0.85rem;
+      color: #CBD5E1;
+      margin: 0.75rem 0 1rem;
+      max-width: 280px;
+    }
+
+    .footer-subtag {
+      font-size: 0.75rem;
+      color: #94A3B8;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-col h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.8rem;
+      color: #FFFFFF;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.4rem; }
+    .footer-col a {
+      color: #CBD5E1;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .footer-col a:hover { color: #FFFFFF; }
+
+    /* 6. ESTILOS DEL GUAROCUYA BOT */
+    .taino-bot-launcher {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 60px;
+      height: 60px;
+      background-color: var(--red-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      box-shadow: 0 4px 15px rgba(197, 15, 15, 0.4);
+      cursor: pointer;
+      z-index: 3000;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .taino-bot-launcher:hover {
+      transform: scale(1.08);
+      background-color: #800C0C;
+    }
+
+    .taino-bot-window {
+      position: fixed;
+      bottom: 95px;
+      right: 25px;
+      width: 350px;
+      max-width: 90vw;
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(5, 19, 66, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      border: 1px solid #E2E8F0;
+    }
+
+    .taino-bot-window.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .bot-header {
+      background-color: var(--navy-primary);
+      color: white;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .bot-title-area {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .bot-avatar {
+      font-size: 1.6rem;
+      background: rgba(255, 255, 255, 0.15);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bot-info h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .bot-info span {
+      font-size: 0.75rem;
+      color: #94A3B8;
+    }
+
+    .close-bot-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .bot-body {
+      padding: 1.2rem;
+      height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background-color: #F8FAFC;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .msg-bot {
+      background-color: #FFFFFF;
+      color: var(--navy-primary);
+      border: 1px solid #E2E8F0;
+      align-self: flex-start;
+      border-top-left-radius: 2px;
+    }
+
+    .msg-user {
+      background-color: var(--red-primary);
+      color: white;
+      align-self: flex-end;
+      border-top-right-radius: 2px;
+    }
+
+    .bot-actions {
+      padding: 0.8rem 1rem;
+      background-color: #FFFFFF;
+      border-top: 1px solid #E2E8F0;
+    }
+
+    .bot-btn {
+      width: 100%;
+      background-color: #F1F5F9;
+      color: var(--navy-primary);
+      border: 1px solid #CBD5E1;
+      padding: 0.6rem;
+      border-radius: 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .bot-btn:hover {
+      background-color: var(--red-primary);
+      color: white;
+      border-color: var(--red-primary);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .hero-title { font-size: 2.2rem; }
+      .mindmap { height: auto; }
+      .mindmap-lines { display: none; }
+      .mindmap-hub {
+        position: static;
+        transform: none;
+        width: auto;
+        max-width: 360px;
+        height: auto;
+        border-radius: 18px;
+        margin: 0 auto 1.75rem;
+        padding: 1.5rem;
+      }
+      .mindmap-node {
+        position: static;
+        max-width: 100%;
+        width: 100%;
+        text-align: center;
+        margin: 0 auto 0.9rem;
+      }
+      .museum3d-section { grid-template-columns: 1fr; }
+      .model3d-wrap { height: 340px; }
+      .footer-content { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. HEADER -->
+  <header class="header">
+    <a href="index.html" class="logo" style="display:flex; align-items:center; gap:0.6rem;">
+      <img src="img/logo.png" alt="Dominicana ViVa" style="height:44px; width:auto;">
+      <span><span class="logo-red">Dominicana</span> <span class="logo-blue">ViVa</span></span>
+    </a>
+    <nav class="nav-menu">
+      <a href="https://metasteps.com/viewer/1651d4c1-48be-4985-aba9-b559a1765584">Museo Digital</a>
+      <a href="museos.html">Red de Museos</a>
+      <a href="biblioteca.html">Biblioteca</a>
+      <a href="#mapa">Mapa Interactivo</a>
+      <a href="foro.html">Foro</a>
+      <a href="Juegos.html">Juegos</a>
+    </nav>
+  </header>
+
+  <!-- 2. HERO SECTION -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Quisqueya<br>
+        <strong>Patrimonio</strong><br>
+        Taino
+      </h1>
+      <div class="hero-buttons">
+        <a href="museos.html#reservar" class="btn btn-red">Reservar Boletos</a>
+        <a href="https://metasteps.com/viewer/1651d4c1-48be-4985-aba9-b559a1765584" class="btn btn-outline">Entrar al Museo Digital</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. MAPA MENTAL DE DATOS CURIOSOS -->
+  <section class="mindmap-section" id="mas">
+    <div class="mindmap" id="mindmap">
+      <svg class="mindmap-lines" id="mindmapLines" aria-hidden="true"></svg>
+      <div class="mindmap-hub">
+        <h3>Los Taínos</h3>
+        <p>Un pueblo indígena de las Antillas que creó una cultura muy rica y dejó palabras que usas todos los días.</p>
+      </div>
+      <div class="mindmap-node" style="left:2%; top:12%;">Quitaban el veneno a la yuca brava para hacer casabe</div>
+      <div class="mindmap-node" style="left:68%; top:10%;">Sembraban en montones de tierra llamados conucos</div>
+      <div class="mindmap-node" style="left:80%; top:40%;">Llamaban a la isla Quisqueya (madre de las tierras) o Haití (tierra alta)</div>
+      <div class="mindmap-node" style="left:60%; top:76%;">Se pintaban la piel para protegerse del sol o de los insectos</div>
+      <div class="mindmap-node" style="left:2%; top:76%;">Vivían en poblados limpios llamados yucayeques</div>
+      <div class="mindmap-node" style="left:14%; top:40%;">Sus casas redondas se llamaban bohíos</div>
+    </div>
+  </section>
+
+  <!-- 4. MUSEO DIGITAL 3D -->
+  <section class="museum3d-section">
+    <div class="museum3d-text">
+      <div class="museum3d-sub">Museo Digital · Sala Taína</div>
+      <h2>Trigonolito en 3D</h2>
+      <p>Una escultura lítica taína de forma triangular, usada como cemí protector. Gira el modelo con el mouse o el dedo, acércate y observa cada detalle tallado en piedra.</p>
+      <ul class="museum3d-facts">
+        <li><strong>¿Qué es?</strong> Un pequeño ídolo de piedra con tres puntas que representa una deidad o espíritu protector.</li>
+        <li><strong>Sus tres vértices:</strong> la punta superior es la cabeza, con los ojos marcados; las dos inferiores, las piernas.</li>
+        <li><strong>Su función:</strong> se enterraban en los conucos para proteger las cosechas de yuca y se colocaban junto a los recién nacidos.</li>
+        <li><strong>Hallazgos:</strong> abundan en las regiones del Cibao y el Este de la isla.</li>
+      </ul>
+      <div style="display:flex; gap:0.9rem; flex-wrap:wrap;">
+        <a href="https://metasteps.com/viewer/1651d4c1-48be-4985-aba9-b559a1765584" class="btn btn-red">Abrir la Galería 3D</a>
+        <a href="biblioteca.html" class="btn btn-navy">Guías didácticas</a>
+      </div>
+    </div>
+    <div class="model3d-wrap">
+      <div class="model3d-loading" id="taino3dLoading">
+        <div class="spinner"></div>
+        <span>Cargando modelo 3D...</span>
+      </div>
+      <div id="taino3d"></div>
+      <span class="model3d-tag">Trigonolito · Taíno</span>
+      <span class="model3d-hint">Arrastra para girar · Rueda para acercar</span>
+    </div>
+  </section>
+
+  <!-- 5. MAPA INTERACTIVO -->
+  <section class="map-interactive-section" id="mapa">
+    <h2 class="map-title">Mapa Interactivo</h2>
+    <p class="map-subtitle">Explora el relieve topográfico de la isla y los sitios arqueológicos taínos clave.</p>
+    <div id="rd-map"></div>
+  </section>
+
+  <!-- 5. FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo" style="display:flex; align-items:center;">
+          <img src="img/logo.png" alt="Dominicana ViVa" style="height:44px; width:auto;">
+        </div>
+        <p>Un proyecto dedicado a preservar, difundir y celebrar la herencia cultural taina como fundamento de la identidad dominicana.</p>
+        <span class="footer-subtag">QUISQUEYA · AYITI · BOHÍO</span>
+      </div>
+
+      <div class="footer-col">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="https://metasteps.com/viewer/1651d4c1-48be-4985-aba9-b559a1765584">Museo Digital</a></li>
+          <li><a href="museos.html">Red de Museos</a></li>
+          <li><a href="#mapa">Mapa Interactivo</a></li>
+          <li><a href="#">Sitios Arqueológicos</a></li>
+          <li><a href="biblioteca.html">Biblioteca Digital</a></li>
+          <li><a href="foro.html">Foro Comunitario</a></li>
+          <li><a href="Juegos.html">Juegos Educativos</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Museos Participantes</h4>
+        <ul>
+          <li><a href="#">Museo del Hombre Dominicano</a></li>
+          <li><a href="#">Museo de las Casas Reales</a></li>
+          <li><a href="#">Museo Arqueológico Altos de Chavón</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 6. GUAROCUYA BOT (COMPONENTE FLOTANTE) -->
+  <div class="taino-bot-launcher" id="botLauncher" onclick="toggleTainoBot()">
+    🗿
+  </div>
+
+  <div class="taino-bot-window" id="botWindow">
+    <div class="bot-header">
+      <div class="bot-title-area">
+        <div class="bot-avatar">🗿</div>
+        <div class="bot-info">
+          <h4>Guarocuya Bot</h4>
+          <span>Sabiduría y Curiosidades Taínas</span>
+        </div>
+      </div>
+      <button class="close-bot-btn" onclick="toggleTainoBot()">&times;</button>
+    </div>
+
+    <div class="bot-body" id="botMessages">
+      <div class="msg msg-bot">
+        ¡Ható (Hola)! Soy <b>Guarocuya</b>. Presiona el botón de abajo y te contaré datos curiosos sobre la vida, palabras y costumbres de nuestros ancestros taínos.
+      </div>
+    </div>
+
+    <div class="bot-actions">
+      <button class="bot-btn" onclick="getCuriosity()">✨ Dame un dato curioso</button>
+    </div>
+  </div>
+
+  <!-- Script de Leaflet.js -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- 7. JAVASCRIPT DE CONFIGURACIÓN, MAPA Y BOT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Navegación suave
+      const navLinks = document.querySelectorAll('a[href^="#"]');
+      navLinks.forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId !== '#') {
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
+        });
+      });
+
+      // Inicialización del Mapa en RD
+      const rdCoords = [18.7357, -70.1627];
+      const map = L.map('rd-map').setView(rdCoords, 8);
+
+      // Capas Base
+      const topoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        maxZoom: 17,
+        attribution: 'Map data: &copy; OpenStreetMap | Style: &copy; OpenTopoMap'
+      });
+
+      const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri'
+      });
+
+      const streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+      });
+
+      topoMap.addTo(map);
+
+      // Grupos para filtros
+      const reliefGroup = L.layerGroup().addTo(map);
+      const tainoGroup = L.layerGroup().addTo(map);
+
+      // Datos de Relieve
+      const reliefPoints = [
+        { coords: [19.0325, -70.9983], title: "⛰️ Pico Duarte", desc: "Punto más alto de las Antillas (3,098 m s. n. m.)." },
+        { coords: [18.3972, -71.5833], title: "🏞️ Lago Enriquillo", desc: "Punto más bajo del Caribe (-40 m s. n. m.)." },
+        { coords: [18.9833, -70.6667], title: "🏔️ Valle Nuevo (Constanza)", desc: "Meseta de alta montaña y reserva ecológica." },
+        { coords: [19.2000, -69.3333], title: "🌴 Sierra de Samaná", desc: "Cadena montañosa rodeada de bahías y acantilados." }
+      ];
+
+      // Datos Arqueológicos Taínos
+      const tainoPoints = [
+        { coords: [18.4381, -69.1606], title: "🏺 Cueva de las Maravillas", desc: "Más de 500 pictografías y grabados taínos." },
+        { coords: [18.8089, -71.2297], title: "🗿 Corral de los Indios", desc: "Histórica plaza ceremonial o batey en San Juan." },
+        { coords: [19.0417, -69.5833], title: "🎨 Cuevas de Los Haitises", desc: "Abundante arte rupestre y petroglifos en cavernas." },
+        { coords: [18.3581, -70.3312], title: "🏹 Cueva de Berna", desc: "Yacimiento clave con restos y cerámica precolombina." },
+        { coords: [19.7828, -70.6875], title: "🐚 La Isabela", desc: "Zona histórica de contacto entre taínos y españoles." }
+      ];
+
+      reliefPoints.forEach(p => {
+        L.marker(p.coords)
+          .bindPopup(`<div class="popup-card"><h4>${p.title}</h4><p>${p.desc}</p></div>`)
+          .addTo(reliefGroup);
+      });
+
+      tainoPoints.forEach(p => {
+        L.marker(p.coords)
+          .bindPopup(`<div class="popup-card"><h4>${p.title}</h4><p>${p.desc}</p></div>`)
+          .addTo(tainoGroup);
+      });
+
+      // Controles
+      const baseMaps = {
+        "⛰️ Relieve / Topografía": topoMap,
+        "🛰️ Satélite HD": satelliteMap,
+        "🗺️ Callejero": streetMap
+      };
+
+      const overlayMaps = {
+        "Puntos de Relieve": reliefGroup,
+        "Sitios Arqueológicos Taínos": tainoGroup
+      };
+
+      L.control.layers(baseMaps, overlayMaps, { position: 'topright' }).addTo(map);
+
+      // Mapa mental: líneas del centro a cada nodo
+      function drawMindmapLines() {
+        const container = document.getElementById('mindmap');
+        const svg = document.getElementById('mindmapLines');
+        if (!container || !svg) return;
+        if (getComputedStyle(svg).display === 'none') {
+          svg.innerHTML = '';
+          return;
+        }
+        const rect = container.getBoundingClientRect();
+        svg.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
+        const hub = container.querySelector('.mindmap-hub');
+        const hubRect = hub.getBoundingClientRect();
+        const cx = hubRect.left - rect.left + hubRect.width / 2;
+        const cy = hubRect.top - rect.top + hubRect.height / 2;
+        let lines = '';
+        container.querySelectorAll('.mindmap-node').forEach(node => {
+          const r = node.getBoundingClientRect();
+          const nx = r.left - rect.left + r.width / 2;
+          const ny = r.top - rect.top + r.height / 2;
+          lines += '<line x1="' + cx.toFixed(1) + '" y1="' + cy.toFixed(1) + '" x2="' + nx.toFixed(1) + '" y2="' + ny.toFixed(1) + '"></line>';
+        });
+        svg.innerHTML = lines;
+      }
+
+      drawMindmapLines();
+      window.addEventListener('resize', drawMindmapLines);
+    });
+
+    // LÓGICA DEL CHATBOT GUAROCUYA
+    const curiosidadesTainas = [
+      "<b>Palabras cotidianas:</b> Palabras que usas a diario como <i>barbacoa, hamaca, canoa, batata, tiburón, huracán</i> y <i>manatí</i> son de origen taíno.",
+      "<b>La hamaca:</b> Los taínos dormían en hamacas hechas de algodón tejido y fibras vegetales. Los españoles quedaron tan deslumbrados por esta invención que la adoptaron inmediatamente para sus barcos.",
+      "<b>El juego de la Batú:</b> Tenían un juego de pelota ceremonial llamado <i>batú</i>, en el que no se podían usar las manos ni los pies para golpear la pelota (usaban la cadera, rodillas y cabeza).",
+      "<b>Tatuajes y pintura:</b> Los taínos se pintaban el cuerpo con pigmentos naturales extraídos de la jagua (negro) y el bija (rojo) para protegerse de los mosquitos y señalar su estatus social.",
+      "<b>El casabe:</b> Elaboraban el casabe usando la <i>yuca amarga</i>. Extraían su jugo tóxico utilizando un exprimidor de tejido vegetal llamado <i>cibucán</i>.",
+      "<b>Grandes navegantes:</b> Construían canoas gigantescas ahuecando un solo tronco de árbol. ¡Algunas podían transportar hasta a 150 personas!",
+      "<b>Organización de las casas:</b> El pueblo vivía en casas circulares llamadas <i>bohíos</i>, mientras que el cacique residía en el <i>caney</i>, una estructura rectangular más espaciosa.",
+      "<b>Las deidades Zemíes:</b> Esculpían ídolos de piedra, madera y cerámica llamados <i>Zemíes</i>, los cuales contenían los espíritus de sus ancestros y fuerzas de la naturaleza."
+    ];
+
+    let lastIndex = -1;
+
+    function toggleTainoBot() {
+      const win = document.getElementById('botWindow');
+      win.classList.toggle('active');
+    }
+
+    function getCuriosity() {
+      const chat = document.getElementById('botMessages');
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg msg-user';
+      userMsg.textContent = '¡Cuéntame una curiosidad!';
+      chat.appendChild(userMsg);
+
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * curiosidadesTainas.length);
+      } while (randomIndex === lastIndex);
+      lastIndex = randomIndex;
+
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg msg-bot';
+        botMsg.innerHTML = curiosidadesTainas[randomIndex];
+        chat.appendChild(botMsg);
+        chat.scrollTop = chat.scrollHeight;
+      }, 400);
+
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+
+  <!-- VISOR 3D TRIGONOLITO (THREE.js) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
+    const viewer = document.getElementById('taino3d');
+    const loading = document.getElementById('taino3dLoading');
+    let renderer, scene, camera, controls, needsRender = true;
+
+    function init3D() {
+      if (renderer) return;
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1;
+      viewer.appendChild(renderer.domElement);
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0a1e5c);
+
+      camera = new THREE.PerspectiveCamera(45, viewer.clientWidth / viewer.clientHeight, 1, 2000);
+      camera.position.set(0, 2.2, 8);
+
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.5));
+      const key = new THREE.DirectionalLight(0xfff1cc, 1);
+      key.position.set(5, 10, 7);
+      scene.add(key);
+      const fill = new THREE.DirectionalLight(0xffffff, 0.3);
+      fill.position.set(-5, 5, 5);
+      scene.add(fill);
+      const back = new THREE.DirectionalLight(0xffddaa, 0.4);
+      back.position.set(0, -5, -5);
+      scene.add(back);
+
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.07;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.2;
+      controls.minDistance = 2;
+      controls.maxDistance = 25;
+      controls.addEventListener('change', () => { needsRender = true; });
+
+      const loader = new GLTFLoader();
+      loader.setMeshoptDecoder(MeshoptDecoder);
+
+      function onModelLoaded(gltf) {
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 5 / maxDim;
+        model.scale.setScalar(scale);
+        model.position.sub(center.multiplyScalar(scale));
+        scene.add(model);
+        controls.update();
+        loading.style.display = 'none';
+        needsRender = true;
+      }
+
+      function onModelError(msg) {
+        loading.innerHTML = '<span>' + msg + '</span>';
+      }
+
+      function ensureEmbeddedModel() {
+        return new Promise((resolve) => {
+          if (window.TRIGONOLITO_GLB) return resolve();
+          const s = document.createElement('script');
+          s.src = '3D/trigonolito.data.js';
+          s.onload = () => resolve();
+          s.onerror = () => resolve();
+          document.head.appendChild(s);
+        });
+      }
+
+      const modelFallbackMsg = 'No se pudo cargar el modelo 3D. Abre esta página desde un servidor local (por ejemplo: python -m http.server) o revisa que exista el archivo 3D/trigonolito.glb.';
+
+      loader.load('3D/trigonolito.glb', onModelLoaded, undefined, (err) => {
+        console.warn('No se pudo cargar el modelo externo:', err);
+        ensureEmbeddedModel().then(() => {
+          if (window.TRIGONOLITO_GLB) {
+            loader.load(window.TRIGONOLITO_GLB, onModelLoaded, undefined, (err2) => {
+              console.warn('No se pudo cargar el modelo embebido:', err2);
+              onModelError(modelFallbackMsg);
+            });
+          } else {
+            onModelError(modelFallbackMsg);
+          }
+        });
+      });
+
+      renderer.setSize(viewer.clientWidth, viewer.clientHeight);
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (controls.autoRotate) controls.update();
+      if (needsRender) {
+        renderer.render(scene, camera);
+        needsRender = false;
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      if (!renderer) return;
+      const w = viewer.clientWidth, h = viewer.clientHeight;
+      if (!w || !h) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      needsRender = true;
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          init3D();
+          observer.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+    observer.observe(viewer);
+  </script>
+</body>
+</html>

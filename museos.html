@@ -1,0 +1,564 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Red de Museos | Dominicana ViVa</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --red-primary: #C50F0F;
+      --red-deep: #800C0C;
+      --navy-primary: #051342;
+      --bg-light: #FFFFFF;
+      --bg-soft: #F8FAFC;
+      --text-dark: #1E293B;
+      --text-muted: #64748B;
+      --font-main: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-main); background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
+
+    /* HEADER */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.8rem 5%; background-color: var(--bg-light);
+      border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 1000;
+    }
+    .logo-link { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+    .logo-img { height: 44px; width: auto; }
+    .logo-text { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+    .logo-red { color: var(--red-primary); }
+    .logo-blue { color: var(--navy-primary); }
+    .nav-menu { display: flex; gap: 1.5rem; }
+    .nav-menu a { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 0.95rem; transition: color 0.2s ease; }
+    .nav-menu a:hover, .nav-menu a.active { color: var(--red-primary); }
+
+    /* HERO */
+    .museos-hero {
+      position: relative; min-height: 340px; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 2rem 1.5rem;
+      background: linear-gradient(rgba(5, 19, 66, 0.75), rgba(128, 12, 12, 0.65)),
+                  url('img/museo-hombre.png') center/cover no-repeat;
+    }
+    .museos-hero-title { color: #FFFFFF; font-size: 3.2rem; font-weight: 800; line-height: 1.08; text-shadow: 0 3px 12px rgba(0,0,0,0.55); }
+    .museos-hero-sub { color: #E2E8F0; font-size: 1rem; margin-top: 0.75rem; font-weight: 600; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ESTADÍSTICAS */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin: -2.5rem auto 3rem; position: relative; }
+    .stat-card { background: var(--navy-primary); color: #FFF; border-radius: 14px; padding: 1.4rem; text-align: center; box-shadow: 0 10px 25px rgba(5,19,66,0.25); }
+    .stat-card strong { display: block; font-size: 1.9rem; font-weight: 800; color: #FFF; }
+    .stat-card span { font-size: 0.85rem; color: #CBD5E1; font-weight: 600; }
+
+    /* FILTROS */
+    .museos-section { padding: 0 0 4rem; }
+    .section-head { text-align: center; margin-bottom: 2rem; }
+    .section-head h2 { font-size: 2.2rem; font-weight: 800; color: var(--navy-primary); }
+    .section-head p { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem; }
+    .province-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2.2rem; }
+    .filter-btn { background: #FFF; border: 1px solid #E2E8F0; padding: 0.5rem 1.05rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; color: var(--text-dark); cursor: pointer; transition: all 0.2s ease; }
+    .filter-btn.active, .filter-btn:hover { background: var(--red-primary); color: #FFF; border-color: var(--red-primary); }
+
+    /* GRID DE MUSEOS */
+    .museos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; }
+    .museo-card {
+      background: #FFF; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;
+      box-shadow: 0 6px 18px rgba(5,19,66,0.08); display: flex; flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .museo-card:hover { transform: translateY(-6px); box-shadow: 0 16px 30px rgba(5,19,66,0.16); }
+    .museo-img { height: 190px; overflow: hidden; position: relative; }
+    .museo-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .museo-card:hover .museo-img img { transform: scale(1.06); }
+    .museo-badge { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.95); color: var(--navy-primary); font-size: 0.72rem; font-weight: 800; padding: 0.3rem 0.7rem; border-radius: 12px; text-transform: uppercase; }
+    .museo-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; flex: 1; }
+    .museo-province { color: var(--red-primary); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+    .museo-body h3 { font-size: 1.2rem; font-weight: 800; color: var(--navy-primary); margin-bottom: 0.4rem; }
+    .museo-body p { font-size: 0.88rem; color: var(--text-muted); flex: 1; margin-bottom: 1rem; }
+    .museo-meta { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); font-weight: 600; margin-bottom: 1rem; }
+    .museo-meta span { display: inline-flex; align-items: center; gap: 0.3rem; }
+    .btn-reservar { background: var(--navy-primary); color: #FFF; border: none; border-radius: 10px; padding: 0.65rem 1rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+    .btn-reservar:hover { background: var(--red-primary); }
+
+    /* FORMULARIO DE RESERVA */
+    .reserva-section { background: linear-gradient(135deg, var(--navy-primary) 0%, #0A1E5C 100%); padding: 4rem 1.5rem; }
+    .reserva-card { max-width: 980px; margin: 0 auto; background: #FFF; border-radius: 18px; padding: 2.5rem; box-shadow: 0 20px 45px rgba(0,0,0,0.35); }
+    .reserva-card h2 { color: var(--navy-primary); font-size: 2rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .reserva-card > p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.8rem; }
+    .reserva-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.4rem; }
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label { font-size: 0.83rem; font-weight: 700; color: var(--text-dark); }
+    .field input, .field select {
+      padding: 0.7rem 0.9rem; border: 1px solid #CBD5E1; border-radius: 9px; font-family: inherit;
+      font-size: 0.9rem; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; background: #FFF;
+    }
+    .field input:focus, .field select:focus { border-color: var(--red-primary); box-shadow: 0 0 0 3px rgba(197,15,15,0.15); }
+    .field.full { grid-column: 1 / -1; }
+    .workshops { grid-column: 1 / -1; background: var(--bg-soft); border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.1rem 1.3rem; }
+    .workshops h4 { font-size: 0.9rem; font-weight: 800; color: var(--navy-primary); margin-bottom: 0.7rem; }
+    .workshop-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .ws-chip { display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; font-weight: 600; background: #FFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.8rem; cursor: pointer; transition: all 0.2s ease; }
+    .ws-chip:hover { border-color: var(--red-primary); }
+    .ws-chip input { accent-color: var(--red-primary); }
+    .ws-chip span.price { margin-left: auto; color: var(--red-primary); font-weight: 800; font-size: 0.78rem; }
+
+    .reserva-summary { grid-column: 1 / -1; background: #FFF8F8; border: 1px dashed var(--red-primary); border-radius: 12px; padding: 1.1rem 1.3rem; }
+    .reserva-summary h4 { font-size: 0.9rem; font-weight: 800; color: var(--red-primary); margin-bottom: 0.4rem; }
+    .reserva-summary .summary-line { font-size: 0.88rem; color: var(--text-dark); font-weight: 600; }
+    .reserva-summary .summary-total { font-size: 1.15rem; font-weight: 800; color: var(--navy-primary); margin-top: 0.3rem; }
+
+    .btn-submit { grid-column: 1 / -1; background: var(--red-primary); color: #FFF; border: none; border-radius: 12px; padding: 0.9rem; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease; font-family: inherit; box-shadow: 0 6px 16px rgba(197,15,15,0.35); }
+    .btn-submit:hover { background: var(--red-deep); transform: translateY(-2px); }
+    .reserva-actions { grid-column: 1 / -1; display: flex; gap: 0.9rem; flex-wrap: wrap; }
+    .reserva-actions .btn-submit { flex: 1; }
+    .btn-cancelar { flex: 1; background: transparent; color: var(--navy-primary); border: 2px solid var(--navy-primary); border-radius: 12px; padding: 0.9rem; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+    .btn-cancelar:hover { background: var(--navy-primary); color: #FFF; }
+
+    .reserva-success { display: none; text-align: center; padding: 1.5rem 0; }
+    .reserva-success.show { display: block; }
+    .reserva-success .check-icon { font-size: 3rem; margin-bottom: 0.6rem; }
+    .reserva-success h3 { color: #16A34A; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .reserva-success p { color: var(--text-muted); font-size: 0.95rem; max-width: 420px; margin: 0 auto 1.2rem; }
+    .reserva-success button { background: var(--navy-primary); color: #FFF; border: none; border-radius: 10px; padding: 0.7rem 1.6rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+    /* FOOTER */
+    .footer { background-color: var(--navy-primary); color: #FFFFFF; padding: 3rem 5% 1.5rem; }
+    .footer-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    .footer-brand .logo-text { font-size: 1.3rem; }
+    .footer-brand p { font-size: 0.85rem; color: #CBD5E1; margin: 0.75rem 0 1rem; max-width: 280px; }
+    .footer-subtag { font-size: 0.75rem; color: #94A3B8; font-weight: 700; letter-spacing: 0.05em; }
+    .footer-col h4 { font-size: 0.95rem; margin-bottom: 0.8rem; color: #FFFFFF; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.4rem; }
+    .footer-col a { color: #CBD5E1; text-decoration: none; font-size: 0.85rem; }
+    .footer-col a:hover { color: #FFFFFF; }
+
+    @media (max-width: 900px) {
+      .museos-grid { grid-template-columns: 1fr 1fr; }
+      .reserva-grid { grid-template-columns: 1fr; }
+      .workshops { grid-column: 1; }
+      .workshop-options { grid-template-columns: 1fr; }
+      .reserva-summary, .btn-submit { grid-column: 1; }
+      .stats-row { grid-template-columns: 1fr; margin-top: -1rem; }
+    }
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .museos-grid { grid-template-columns: 1fr; }
+      .footer-content { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="index.html" class="logo-link">
+      <img src="img/logo.png" alt="Dominicana ViVa" class="logo-img">
+      <span class="logo-text"><span class="logo-red">Dominicana</span> <span class="logo-blue">ViVa</span></span>
+    </a>
+    <nav class="nav-menu">
+      <a href="index.html">Museo Digital</a>
+      <a href="museos.html" class="active">Red de Museos</a>
+      <a href="biblioteca.html">Biblioteca</a>
+      <a href="index.html#mapa">Mapa Interactivo</a>
+      <a href="foro.html">Foro</a>
+      <a href="Juegos.html">Juegos</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="museos-hero">
+    <div>
+      <h1 class="museos-hero-title">Red Nacional de Museos</h1>
+      <p class="museos-hero-sub">Explora los espacios culturales de cada provincia y reserva tu visita</p>
+    </div>
+  </section>
+
+  <!-- ESTADÍSTICAS -->
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-card"><strong>32</strong><span>Provincias cubiertas</span></div>
+      <div class="stat-card"><strong>120+</strong><span>Espacios culturales</span></div>
+      <div class="stat-card"><strong>40</strong><span>Talleres regionales</span></div>
+    </div>
+  </div>
+
+  <!-- CATÁLOGO -->
+  <section class="museos-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Museos por Provincia</h2>
+        <p>Filtra por provincia para descubrir los museos y salas de exhibición disponibles.</p>
+      </div>
+
+      <div class="province-filters">
+        <button class="filter-btn active" data-filter="all">Todas</button>
+        <button class="filter-btn" data-filter="distrito">Distrito Nacional</button>
+        <button class="filter-btn" data-filter="la-romana">La Romana</button>
+        <button class="filter-btn" data-filter="santiago">Santiago</button>
+        <button class="filter-btn" data-filter="sanjuan">San Juan</button>
+        <button class="filter-btn" data-filter="samana">Samaná</button>
+        <button class="filter-btn" data-filter="puertoplata">Puerto Plata</button>
+      </div>
+
+      <div class="museos-grid" id="museosGrid">
+        <div class="museo-card" data-province="distrito" data-title="Museo del Hombre Dominicano">
+          <div class="museo-img">
+            <span class="museo-badge">Arqueología</span>
+            <img src="img/museo-hombre.png" alt="Museo del Hombre Dominicano">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">Distrito Nacional</div>
+            <h3>Museo del Hombre Dominicano</h3>
+            <p>La mayor colección arqueológica taína del país: cemíes, duhos y cerámica precolombina de Quisqueya.</p>
+            <div class="museo-meta">
+              <span>🕘 Mar–Dom · 9:00–17:00</span>
+              <span>🎫 RD$ 100</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="distrito" data-title="Museo de las Casas Reales">
+          <div class="museo-img">
+            <span class="museo-badge">Historia</span>
+            <img src="img/museo-casas-reales.png" alt="Museo de las Casas Reales">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">Distrito Nacional</div>
+            <h3>Museo de las Casas Reales</h3>
+            <p>Palacio colonial del siglo XVI con salas dedicadas al primer contacto entre taínos y europeos.</p>
+            <div class="museo-meta">
+              <span>🕘 Mar–Dom · 9:00–17:00</span>
+              <span>🎫 RD$ 150</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="distrito" data-title="Museo Arqueológico Regional Altos de Chavón">
+          <div class="museo-img">
+            <span class="museo-badge">Arqueología</span>
+            <img src="img/museo-chavon.png" alt="Museo Arqueológico Altos de Chavón">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">Distrito Nacional</div>
+            <h3>Museo de Historia y Geografía</h3>
+            <p>Recorrido cronológico por la geografía, las culturas originarias y los hitos de la nación.</p>
+            <div class="museo-meta">
+              <span>🕘 Lun–Vie · 8:30–16:30</span>
+              <span>🎫 RD$ 75</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="la-romana" data-title="Museo Arqueológico Regional Altos de Chavón">
+          <div class="museo-img">
+            <span class="museo-badge">Arqueología</span>
+            <img src="img/museo-chavon.png" alt="Museo Arqueológico Regional Altos de Chavón">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">La Romana</div>
+            <h3>Museo Arqueológico Altos de Chavón</h3>
+            <p>Colección regional de piezas taínas del Este del país, con vistas al río Chavón.</p>
+            <div class="museo-meta">
+              <span>🕘 Todos los días · 9:00–18:00</span>
+              <span>🎫 RD$ 200</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="santiago" data-title="Centro León">
+          <div class="museo-img">
+            <span class="museo-badge">Cultura</span>
+            <img src="img/museo-casas-reales.png" alt="Centro León">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">Santiago</div>
+            <h3>Centro León</h3>
+            <p>Museo y centro cultural del Cibao con exposiciones sobre arte taíno e identidad dominicana.</p>
+            <div class="museo-meta">
+              <span>🕘 Mar–Dom · 10:00–19:00</span>
+              <span>🎫 RD$ 150</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="sanjuan" data-title="Parque Ceremonial Corral de los Indios">
+          <div class="museo-img">
+            <span class="museo-badge">Patrimonio</span>
+            <img src="img/museo-hombre.png" alt="Corral de los Indios">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">San Juan</div>
+            <h3>Corral de los Indios</h3>
+            <p>Plaza ceremonial o batey del cacique Enriquillo, patrimonio taíno al aire libre.</p>
+            <div class="museo-meta">
+              <span>🕘 Todos los días · 8:00–18:00</span>
+              <span>🎫 Gratis</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="samana" data-title="Cuevas de Los Haitises">
+          <div class="museo-img">
+            <span class="museo-badge">Ecoturismo</span>
+            <img src="img/image copy.png" alt="Cuevas de Los Haitises">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">Samaná</div>
+            <h3>Recorrido Cultural Los Haitises</h3>
+            <p>Visita guiada a las cavernas con arte rupestre taíno dentro del parque nacional.</p>
+            <div class="museo-meta">
+              <span>🕘 Todos los días · 8:00–16:00</span>
+              <span>🎫 RD$ 300</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="puertoplata" data-title="La Isabela Histórica">
+          <div class="museo-img">
+            <span class="museo-badge">Historia</span>
+            <img src="img/image.png" alt="La Isabela Histórica">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">Puerto Plata</div>
+            <h3>Parque La Isabela</h3>
+            <p>Primera villa europea de América, con museo de sitio sobre el primer contacto taíno-español.</p>
+            <div class="museo-meta">
+              <span>🕘 Mar–Dom · 9:00–17:00</span>
+              <span>🎫 RD$ 100</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+
+        <div class="museo-card" data-province="distrito" data-title="Museo Nacional de Historia Natural Prof. Eugenio de Jesús Marcano">
+          <div class="museo-img">
+            <span class="museo-badge">Naturaleza</span>
+            <img src="img/img 4.png" alt="Museo Nacional de Historia Natural">
+          </div>
+          <div class="museo-body">
+            <div class="museo-province">Distrito Nacional</div>
+            <h3>Historia Natural Prof. Eugenio de Jesús Marcano</h3>
+            <p>La biodiversidad de la isla y su geología, complemento ideal de la sala taína.</p>
+            <div class="museo-meta">
+              <span>🕘 Mar–Dom · 9:00–17:00</span>
+              <span>🎫 RD$ 100</span>
+            </div>
+            <button class="btn-reservar" onclick="selectMuseum(this)">Reservar visita</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULARIO DE RESERVA -->
+  <section class="reserva-section" id="reservar">
+    <div class="reserva-card">
+      <h2>Reserva de Visita</h2>
+      <p>Selecciona un museo, elige fecha, boletos y talleres. Este es un demo visual: ningún pago se procesa.</p>
+
+      <form class="reserva-grid" id="reservaForm" onsubmit="return enviarReserva(event)">
+        <div class="field">
+          <label for="selMuseo">Museo / Espacio</label>
+          <select id="selMuseo" required>
+            <option value="">Selecciona un museo...</option>
+            <option>Museo del Hombre Dominicano</option>
+            <option>Museo de las Casas Reales</option>
+            <option>Museo de Historia y Geografía</option>
+            <option>Museo Arqueológico Altos de Chavón</option>
+            <option>Centro León</option>
+            <option>Corral de los Indios</option>
+            <option>Recorrido Cultural Los Haitises</option>
+            <option>Parque La Isabela</option>
+            <option>Historia Natural Prof. Eugenio de Jesús Marcano</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="selFecha">Fecha de visita</label>
+          <input type="date" id="selFecha" required>
+        </div>
+
+        <div class="field">
+          <label for="selHora">Horario</label>
+          <select id="selHora">
+            <option value="09:00">09:00 am</option>
+            <option value="10:30">10:30 am</option>
+            <option value="01:00">01:00 pm</option>
+            <option value="03:00">03:00 pm</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="numAdultos">Boletos adultos (RD$ 100 c/u)</label>
+          <input type="number" id="numAdultos" min="0" max="20" value="2" oninput="actualizarResumen()">
+        </div>
+
+        <div class="field">
+          <label for="numNinos">Boletos estudiantes (RD$ 50 c/u)</label>
+          <input type="number" id="numNinos" min="0" max="20" value="0" oninput="actualizarResumen()">
+        </div>
+
+        <div class="field">
+          <label for="selGuia">Guía didáctico</label>
+          <select id="selGuia" onchange="actualizarResumen()">
+            <option value="0">Sin guía</option>
+            <option value="300">Con guía especializado (+RD$ 300)</option>
+          </select>
+        </div>
+
+        <div class="workshops">
+          <h4>Talleres regionales disponibles</h4>
+          <div class="workshop-options">
+            <label class="ws-chip"><input type="checkbox" class="ws-check" data-price="200" onchange="actualizarResumen()"> Elaboración de casabe <span class="price">+RD$200</span></label>
+            <label class="ws-chip"><input type="checkbox" class="ws-check" data-price="150" onchange="actualizarResumen()"> Barro y cerámica taína <span class="price">+RD$150</span></label>
+            <label class="ws-chip"><input type="checkbox" class="ws-check" data-price="180" onchange="actualizarResumen()"> Lectura de petroglifos <span class="price">+RD$180</span></label>
+            <label class="ws-chip"><input type="checkbox" class="ws-check" data-price="120" onchange="actualizarResumen()"> Cestería con fibras <span class="price">+RD$120</span></label>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label for="selNombre">Nombre del visitante / grupo</label>
+          <input type="text" id="selNombre" placeholder="Ej. Grupo 5°B, Escuela Básica Salomé Ureña" required>
+        </div>
+
+        <div class="reserva-summary">
+          <h4>Resumen de la reserva</h4>
+          <div class="summary-line" id="summaryDetail">Selecciona un museo para comenzar.</div>
+          <div class="summary-total" id="summaryTotal">Total: RD$ 0</div>
+        </div>
+
+        <div class="reserva-actions">
+          <button type="submit" class="btn-submit">Confirmar reserva</button>
+          <button type="button" class="btn-cancelar" onclick="cancelarReserva()">Cancelar</button>
+        </div>
+      </form>
+
+      <div class="reserva-success" id="reservaSuccess">
+        <div class="check-icon">✅</div>
+        <h3>¡Reserva confirmada!</h3>
+        <p id="successDetail">Se generó su reserva. Este es un demo educativo: no se realizó ningún cargo.</p>
+        <button onclick="nuevaReserva()">Hacer otra reserva</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Dominicana ViVa" class="logo-img" style="height:44px; width:auto;">
+        <p>Una plataforma nacional que centraliza la Red de Museos y preserva la herencia cultural de Quisqueya.</p>
+        <span class="footer-subtag">QUISQUEYA · AYITI · BOHÍO</span>
+      </div>
+      <div class="footer-col">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Museo Digital</a></li>
+          <li><a href="museos.html">Red de Museos</a></li>
+          <li><a href="biblioteca.html">Biblioteca Digital</a></li>
+          <li><a href="index.html#mapa">Mapa Interactivo</a></li>
+          <li><a href="foro.html">Foro Comunitario</a></li>
+          <li><a href="Juegos.html">Juegos Educativos</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Museos Participantes</h4>
+        <ul>
+          <li><a href="museos.html">Museo del Hombre Dominicano</a></li>
+          <li><a href="museos.html">Museo de las Casas Reales</a></li>
+          <li><a href="museos.html">Museo Arqueológico Altos de Chavón</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const cards = document.querySelectorAll('.museo-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const f = btn.dataset.filter;
+          cards.forEach(c => {
+            c.style.display = (f === 'all' || c.dataset.province === f) ? 'flex' : 'none';
+          });
+        });
+      });
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('selFecha').min = today;
+      document.getElementById('selFecha').value = today;
+    });
+
+    function selectMuseum(btn) {
+      const title = btn.closest('.museo-card').dataset.title;
+      const select = document.getElementById('selMuseo');
+      const options = Array.from(select.options);
+      const match = options.find(o => o.value.toLowerCase().includes(title.toLowerCase()) || title.toLowerCase().includes(o.value.toLowerCase()));
+      if (match) select.value = match.value;
+      actualizarResumen();
+      document.getElementById('reservar').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function actualizarResumen() {
+      const adultos = parseInt(document.getElementById('numAdultos').value) || 0;
+      const ninos = parseInt(document.getElementById('numNinos').value) || 0;
+      const guia = parseInt(document.getElementById('selGuia').value) || 0;
+      const museo = document.getElementById('selMuseo').value || 'un museo';
+      const fecha = document.getElementById('selFecha').value || 'sin fecha';
+
+      let talleres = 0, talleresNombres = [];
+      document.querySelectorAll('.ws-check:checked').forEach(cb => {
+        talleres += parseInt(cb.dataset.price);
+        talleresNombres.push(cb.closest('.ws-chip').textContent.trim().replace(/\+RD\$\d+$/, ''));
+      });
+
+      const total = adultos * 100 + ninos * 50 + guia + talleres;
+
+      document.getElementById('summaryDetail').textContent =
+        `${museo} · ${fecha} · ${adultos} adulto(s), ${ninos} estudiante(s)` + (guia ? ' · con guía' : '') + (talleresNombres.length ? ` · Talleres: ${talleresNombres.join(', ')}` : '');
+      document.getElementById('summaryTotal').textContent = `Total: RD$ ${total.toLocaleString('es-DO')}`;
+    }
+
+    function enviarReserva(e) {
+      e.preventDefault();
+      actualizarResumen();
+      document.getElementById('successDetail').textContent =
+        `Reserva para ${document.getElementById('selMuseo').value} el ${document.getElementById('selFecha').value}. Este es un demo educativo: no se realizó ningún cargo.`;
+      document.getElementById('reservaForm').style.display = 'none';
+      document.getElementById('reservaSuccess').classList.add('show');
+      return false;
+    }
+
+    function cancelarReserva() {
+      document.getElementById('reservaSuccess').classList.remove('show');
+      document.getElementById('reservaForm').style.display = 'grid';
+      document.getElementById('reservaForm').reset();
+      actualizarResumen();
+    }
+
+    function nuevaReserva() {
+      cancelarReserva();
+    }
+  </script>
+</body>
+</html>
+

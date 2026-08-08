@@ -1,0 +1,302 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca Digital | Dominicana ViVa</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --red-primary: #800C0C;
+      --red-bright: #C50F0F;
+      --navy-primary: #051342;
+      --bg-light: #FFFFFF;
+      --text-dark: #1E293B;
+      --font-main: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-main); background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background-color: var(--bg-light);
+      border-bottom: 1px solid #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; }
+    .logo-red { color: var(--red-bright); }
+    .logo-blue { color: var(--navy-primary); }
+
+    .nav-menu { display: flex; gap: 1.5rem; }
+    .nav-menu a { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 0.95rem; transition: color 0.2s ease; }
+    .nav-menu a:hover, .nav-menu a.active { color: var(--red-bright); }
+
+    /* SECCIÓN BIBLIOTECA DIGITAL */
+    .biblioteca-section { background-color: #FFF8F8; padding-bottom: 5rem; }
+
+    .biblioteca-hero {
+      position: relative;
+      min-height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)),
+                  url('img/image\ copy.png') center/cover no-repeat;
+    }
+
+    .biblioteca-hero-title { color: #FFFFFF; font-size: 3.5rem; font-weight: 800; line-height: 1.05; text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6); }
+
+    .biblioteca-container { max-width: 1050px; margin: 3rem auto 0; padding: 0 1.5rem; }
+
+    /* CONTROLES DE BÚSQUEDA Y FILTROS */
+    .biblio-controls { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+    .search-box { flex: 1; min-width: 260px; }
+    .search-input { width: 100%; padding: 0.75rem 1.25rem; border-radius: 25px; border: 1px solid #E2E8F0; font-size: 0.95rem; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .filter-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-btn { background-color: #FFFFFF; border: 1px solid #E2E8F0; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; color: var(--text-dark); cursor: pointer; transition: all 0.2s ease; }
+    .filter-btn.active, .filter-btn:hover { background-color: var(--red-primary); color: #FFFFFF; border-color: var(--red-primary); }
+
+    /* GRID DE LIBROS */
+    .biblioteca-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 2rem; }
+    .card-libro { background-color: var(--red-primary); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 8px 20px rgba(128, 12, 12, 0.18); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .card-libro:hover { transform: translateY(-6px); box-shadow: 0 14px 28px rgba(128, 12, 12, 0.28); }
+    .card-img-wrapper { width: 100%; height: 280px; border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; background-color: #5C0808; }
+    .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-info { text-align: center; color: #FFFFFF; margin-bottom: 1rem; }
+    .card-info h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .card-info p { font-size: 0.85rem; opacity: 0.9; }
+
+    .btn-descubre { background-color: #FFFFFF; color: var(--navy-primary); border: none; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 2.2rem; border-radius: 20px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); }
+    .btn-descubre:hover { background-color: var(--navy-primary); color: #FFFFFF; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 19, 66, 0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-card { background: #FFFFFF; border-radius: 16px; max-width: 550px; width: 90%; padding: 2rem; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .close-modal { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--text-dark); }
+    .modal-card h3 { color: var(--red-primary); font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .modal-card .author { font-weight: 600; color: #64748B; font-size: 0.9rem; margin-bottom: 1rem; }
+    .modal-card p { font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; color: var(--text-dark); }
+    .btn-navy { background-color: var(--navy-primary); color: #FFFFFF; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 0.95rem; display: inline-block; text-align: center; }
+
+    /* FOOTER */
+    .footer { background-color: var(--navy-primary); color: #FFFFFF; padding: 3rem 5% 1.5rem; }
+    .footer-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    .footer-brand .logo { font-size: 1.4rem; }
+    .footer-brand p { font-size: 0.85rem; color: #CBD5E1; margin: 0.75rem 0 1rem; max-width: 280px; }
+    .footer-subtag { font-size: 0.75rem; color: #94A3B8; font-weight: 700; letter-spacing: 0.05em; }
+    .footer-col h4 { font-size: 0.95rem; margin-bottom: 0.8rem; color: #FFFFFF; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.4rem; }
+    .footer-col a { color: #CBD5E1; text-decoration: none; font-size: 0.85rem; }
+    .footer-col a:hover { color: #FFFFFF; }
+
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .biblioteca-grid { grid-template-columns: 1fr; }
+      .footer-content { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="index.html" class="logo" style="display:flex; align-items:center; gap:0.6rem;">
+      <img src="img/logo.png" alt="Dominicana ViVa" style="height:44px; width:auto;">
+      <span><span class="logo-red">Dominicana</span> <span class="logo-blue">ViVa</span></span>
+    </a>
+    <nav class="nav-menu">
+      <a href="index.html">Museo Digital</a>
+      <a href="museos.html">Red de Museos</a>
+      <a href="biblioteca.html" class="active">Biblioteca</a>
+      <a href="index.html#mapa">Mapa Interactivo</a>
+      <a href="foro.html">Foro</a>
+      <a href="Juegos.html">Juegos</a>
+    </nav>
+  </header>
+
+  <!-- SECCIÓN BIBLIOTECA DIGITAL -->
+  <section class="biblioteca-section">
+    <div class="biblioteca-hero">
+      <h1 class="biblioteca-hero-title">Biblioteca<br>Digital</h1>
+    </div>
+
+    <div class="biblioteca-container">
+      <div class="biblio-controls">
+        <div class="search-box">
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar libros, documentos o autores...">
+        </div>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="arte">Arte </button>
+          <button class="filter-btn" data-filter="petroglifos">Petroglifos</button>
+          <button class="filter-btn" data-filter="historia">Sociedad</button>
+          <button class="filter-btn" data-filter="mapa">Geografía</button>
+        </div>
+      </div>
+
+      <div class="biblioteca-grid" id="booksGrid">
+        <div class="card-libro" data-category="arte" data-title="Taínos: Arte y Sociedad" data-author="Museo del Hombre Dominicano" data-desc="Catálogo exhaustivo sobre la escultura en piedra, madera y cerámica precolombina de Quisqueya." data-url="https://orias.berkeley.edu/resources-teachers/societies-americas/ta%C3%ADnos-y-los-pobladores-ind%C3%ADgenas-del-caribe">
+          <div class="card-img-wrapper">
+            <img src="img/{384FC01D-7D38-4B77-B823-7F1F86DCCD24}.png" alt="Taínos Arte y Sociedad">
+          </div>
+          <div class="card-info">
+            <h3>Taínos: Arte y Sociedad</h3>
+            <p>Monografía de Antropología</p>
+          </div>
+          <button class="btn-descubre" onclick="openModal(this)">Descubre mas</button>
+        </div>
+
+        <div class="card-libro" data-category="petroglifos" data-title="Arte Rupestre de las Antillas" data-author="Arqueología Antillana" data-desc="Estudio detallado de los petroglifos y pictografías hallados en cuevas de República Dominicana." data-url="https://issuu.com/popularenlinea/docs/ta_nos_arte_y_sociedad">
+          <div class="card-img-wrapper">
+            <img src="img/{4A2E73ED-1BB1-4CB4-822B-A0FE8B5AD93C}.png" alt="Petroglifos y Arte Rupestre">
+          </div>
+          <div class="card-info">
+            <h3>Arte Rupestre en Cuevas</h3>
+            <p>Símbolos y Cosmovisión</p>
+          </div>
+          <button class="btn-descubre" onclick="openModal(this)">Descubre mas</button>
+        </div>
+
+        <div class="card-libro" data-category="historia" data-title="Vida Cotidiana en los Yucayeques" data-author="Fundación Cultural Dominicana" data-desc="Reconstrucción histórica de los asentamientos, la agricultura en conucos y la gastronomía autóctona." data-url="https://casadelcordon.com/Mitos-y-cultura-taina-para-ninos-y-jovenes">
+          <div class="card-img-wrapper">
+            <img src="img/img 4.png" alt="Cultura y Vida Cotidiana">
+          </div>
+          <div class="card-info">
+            <h3>Vida en Yucayeques</h3>
+            <p>Estructura Social y Costumbres</p>
+          </div>
+          <button class="btn-descubre" onclick="openModal(this)">Descubre mas</button>
+        </div>
+
+        <div class="card-libro" data-category="mapa" data-title="Rutas y Cacicazgos de la Española" data-author="Cartografía Histórica" data-desc="Mapas explicativos sobre la división territorial de los 5 cacicazgos y las migraciones arawakas." data-url="https://es.wikipedia.org/wiki/Ta%C3%ADno">
+          <div class="card-img-wrapper">
+            <img src="img/{E6447264-4C60-45B0-B47C-116005103DF8}.png" alt="Mapas e Migración Antillana">
+          </div>
+          <div class="card-info">
+            <h3>Cacicazgos y Territorios</h3>
+            <p>Mapas Geográficos Antiguos</p>
+          </div>
+          <button class="btn-descubre" onclick="openModal(this)">Descubre mas</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL INFORMATIVA -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <button class="close-modal" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Título del Libro</h3>
+      <div class="author" id="modalAuthor">Autor / Fuente</div>
+      <p id="modalDesc">Descripción completa del libro o documento digitalizado...</p>
+      <a href="#" id="modalWebLink" class="btn-navy" target="_blank" rel="noopener noreferrer">Visitar Sitio Web</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo" style="display:flex; align-items:center;">
+          <img src="img/logo.png" alt="Dominicana ViVa" style="height:44px; width:auto;">
+        </div>
+        <p>Un proyecto dedicado a preservar, difundir y celebrar la herencia cultural taina como fundamento de la identidad dominicana.</p>
+        <span class="footer-subtag">QUISQUEYA · AYITI · BOHÍO</span>
+      </div>
+
+      <div class="footer-col">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="index.html">Museo Digital</a></li>
+          <li><a href="museos.html">Red de Museos</a></li>
+          <li><a href="index.html#mapa">Mapa Interactivo</a></li>
+          <li><a href="biblioteca.html">Biblioteca Digital</a></li>
+          <li><a href="foro.html">Foro Comunitario</a></li>
+          <li><a href="Juegos.html">Juegos Educativos</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Museos Participantes</h4>
+        <ul>
+          <li><a href="#">Museo del Hombre Dominicano</a></li>
+          <li><a href="#">Museo de las Casas Reales</a></li>
+          <li><a href="#">Museo Arqueológico Altos de Chavón</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById('searchInput');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const books = document.querySelectorAll('.card-libro');
+
+      function filterBooks() {
+        const query = searchInput.value.toLowerCase();
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+        books.forEach(book => {
+          const title = book.dataset.title.toLowerCase();
+          const author = book.dataset.author.toLowerCase();
+          const category = book.dataset.category;
+
+          const matchesSearch = title.includes(query) || author.includes(query);
+          const matchesCategory = activeFilter === 'all' || category === activeFilter;
+
+          if (matchesSearch && matchesCategory) {
+            book.style.display = 'flex';
+          } else {
+            book.style.display = 'none';
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterBooks);
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterBooks();
+        });
+      });
+    });
+
+    function openModal(btn) {
+      const card = btn.closest('.card-libro');
+      document.getElementById('modalTitle').textContent = card.dataset.title;
+      document.getElementById('modalAuthor').textContent = card.dataset.author;
+      document.getElementById('modalDesc').textContent = card.dataset.desc;
+      
+      const webUrl = card.dataset.url || '#';
+      const modalButton = document.getElementById('modalWebLink');
+      modalButton.href = webUrl;
+
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+  </script>
+</body>
+</html>

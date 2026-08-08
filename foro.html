@@ -1,0 +1,286 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foro Comunitario | Dominicana ViVa</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --red-primary: #C50F0F;
+      --red-deep: #800C0C;
+      --navy-primary: #051342;
+      --bg-light: #FFFFFF;
+      --bg-soft: #F8FAFC;
+      --text-dark: #1E293B;
+      --text-muted: #64748B;
+      --font-main: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-main); background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
+
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.8rem 5%; background-color: var(--bg-light);
+      border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 1000;
+    }
+    .logo-link { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+    .logo-img { height: 44px; width: auto; }
+    .logo-text { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+    .logo-red { color: var(--red-primary); }
+    .logo-blue { color: var(--navy-primary); }
+    .nav-menu { display: flex; gap: 1.5rem; }
+    .nav-menu a { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 0.95rem; transition: color 0.2s ease; }
+    .nav-menu a:hover, .nav-menu a.active { color: var(--red-primary); }
+
+    .foro-hero {
+      position: relative; min-height: 300px; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 2rem 1.5rem;
+      background: linear-gradient(rgba(5, 19, 66, 0.8), rgba(128, 12, 12, 0.7)),
+                  url('img/image.png') center/cover no-repeat;
+    }
+    .foro-hero-title { color: #FFFFFF; font-size: 3.2rem; font-weight: 800; text-shadow: 0 3px 12px rgba(0,0,0,0.55); }
+    .foro-hero-sub { color: #E2E8F0; font-size: 1rem; margin-top: 0.75rem; font-weight: 600; }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; }
+
+    .foro-section { padding: 3rem 0 4rem; }
+
+    .nueva-publicacion {
+      background: #FFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.3rem 1.5rem;
+      box-shadow: 0 6px 18px rgba(5,19,66,0.06); margin-bottom: 2rem; display: flex; gap: 0.9rem; align-items: center;
+    }
+    .nueva-publicacion .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--red-primary); color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+    .np-input { flex: 1; border: 1px solid #CBD5E1; border-radius: 22px; padding: 0.75rem 1.2rem; font-family: inherit; font-size: 0.92rem; outline: none; }
+    .np-input:focus { border-color: var(--red-primary); box-shadow: 0 0 0 3px rgba(197,15,15,0.12); }
+    .btn-publicar { background: var(--navy-primary); color: #FFF; border: none; border-radius: 22px; padding: 0.7rem 1.6rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+    .btn-publicar:hover { background: var(--red-primary); }
+
+    .categoria-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
+    .cat-tab { background: #FFF; border: 1px solid #E2E8F0; padding: 0.45rem 1rem; border-radius: 18px; font-weight: 600; font-size: 0.83rem; color: var(--text-dark); cursor: pointer; transition: all 0.2s ease; }
+    .cat-tab.active, .cat-tab:hover { background: var(--red-primary); color: #FFF; border-color: var(--red-primary); }
+
+    .hilo {
+      background: #FFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.4rem 1.5rem;
+      margin-bottom: 1.1rem; transition: transform 0.25s ease, box-shadow 0.25s ease; cursor: pointer;
+    }
+    .hilo:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(5,19,66,0.12); }
+    .hilo-head { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.7rem; }
+    .hilo .avatar { width: 42px; height: 42px; border-radius: 50%; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+    .hilo-user strong { display: block; font-size: 0.92rem; }
+    .hilo-user span { font-size: 0.75rem; color: var(--text-muted); }
+    .hilo-cat { margin-left: auto; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 12px; background: #FFF8F8; color: var(--red-primary); border: 1px solid #F3D9D9; }
+    .hilo-body h3 { font-size: 1.08rem; font-weight: 800; color: var(--navy-primary); margin-bottom: 0.3rem; }
+    .hilo-body p { font-size: 0.9rem; color: var(--text-muted); }
+    .hilo-foot { display: flex; gap: 1.3rem; margin-top: 0.9rem; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+    .hilo-foot span { display: inline-flex; align-items: center; gap: 0.3rem; }
+    .hilo-foot .like { color: var(--red-primary); }
+
+    .cargar-mas { display: block; margin: 2rem auto 0; background: none; border: 2px solid var(--navy-primary); color: var(--navy-primary); border-radius: 22px; padding: 0.7rem 2rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+    .cargar-mas:hover { background: var(--navy-primary); color: #FFF; }
+
+    .footer { background-color: var(--navy-primary); color: #FFFFFF; padding: 3rem 5% 1.5rem; }
+    .footer-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    .footer-brand .logo-text { font-size: 1.3rem; }
+    .footer-brand p { font-size: 0.85rem; color: #CBD5E1; margin: 0.75rem 0 1rem; max-width: 280px; }
+    .footer-subtag { font-size: 0.75rem; color: #94A3B8; font-weight: 700; letter-spacing: 0.05em; }
+    .footer-col h4 { font-size: 0.95rem; margin-bottom: 0.8rem; color: #FFFFFF; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.4rem; }
+    .footer-col a { color: #CBD5E1; text-decoration: none; font-size: 0.85rem; }
+    .footer-col a:hover { color: #FFFFFF; }
+
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .footer-content { grid-template-columns: 1fr; }
+      .nueva-publicacion { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo-link">
+      <img src="img/logo.png" alt="Dominicana ViVa" class="logo-img">
+      <span class="logo-text"><span class="logo-red">Dominicana</span> <span class="logo-blue">ViVa</span></span>
+    </a>
+    <nav class="nav-menu">
+      <a href="index.html">Museo Digital</a>
+      <a href="museos.html">Red de Museos</a>
+      <a href="biblioteca.html">Biblioteca</a>
+      <a href="index.html#mapa">Mapa Interactivo</a>
+      <a href="foro.html" class="active">Foro</a>
+      <a href="Juegos.html">Juegos</a>
+    </nav>
+  </header>
+
+  <section class="foro-hero">
+    <div>
+      <h1 class="foro-hero-title">Foro Comunitario</h1>
+      <p class="foro-hero-sub">Comparte hallazgos, rutas culturales y experiencias en los museos de la red</p>
+    </div>
+  </section>
+
+  <section class="foro-section">
+    <div class="container">
+
+      <div class="nueva-publicacion">
+        <div class="avatar">C</div>
+        <input type="text" class="np-input" id="newPostInput" placeholder="¿Qué quieres compartir con la comunidad?">
+        <button class="btn-publicar" onclick="publicar()">Publicar</button>
+      </div>
+
+      <div class="categoria-tabs">
+        <button class="cat-tab active" data-cat="todas">Todas</button>
+        <button class="cat-tab" data-cat="rutas">Rutas culturales</button>
+        <button class="cat-tab" data-cat="arqueologia">Arqueología</button>
+        <button class="cat-tab" data-cat="educacion">Educación</button>
+        <button class="cat-tab" data-cat="gastronomia">Gastronomía</button>
+      </div>
+
+      <div id="hilosContainer">
+        <div class="hilo" data-cat="arqueologia">
+          <div class="hilo-head">
+            <div class="avatar" style="background:#C50F0F;">AM</div>
+            <div class="hilo-user"><strong>Ana Mercedes</strong><span>Docente · San Pedro de Macorís</span></div>
+            <span class="hilo-cat">Arqueología</span>
+          </div>
+          <div class="hilo-body">
+            <h3>Cemí de algodón de La Vega: ¿la pieza más valiosa del Museo del Hombre?</h3>
+            <p>Llevé a mis estudiantes a ver la réplica del Cemí de algodón y quedaron fascinados. ¿Alguien sabe en qué vitrina se exhibe el original actualmente?</p>
+          </div>
+          <div class="hilo-foot">
+            <span>💬 14 respuestas</span>
+            <span class="like">❤️ 32</span>
+            <span>🕘 Hace 2 horas</span>
+          </div>
+        </div>
+
+        <div class="hilo" data-cat="rutas">
+          <div class="hilo-head">
+            <div class="avatar" style="background:#051342;">JL</div>
+            <div class="hilo-user"><strong>José Luis Peña</strong><span>Guía turístico · Samaná</span></div>
+            <span class="hilo-cat">Rutas culturales</span>
+          </div>
+          <div class="hilo-body">
+            <h3>Ruta de los 5 Cacicazgos: mi plan de 3 días para estudiantes</h3>
+            <p>Comparto el itinerario que preparé visitando el Corral de los Indios, Los Haitises y La Isabela. ¡Dejen sus comentarios para mejorarlo!</p>
+          </div>
+          <div class="hilo-foot">
+            <span>💬 21 respuestas</span>
+            <span class="like">❤️ 48</span>
+            <span>🕘 Hace 5 horas</span>
+          </div>
+        </div>
+
+        <div class="hilo" data-cat="educacion">
+          <div class="hilo-head">
+            <div class="avatar" style="background:#0A1E5C;">MC</div>
+            <div class="hilo-user"><strong>María Castillo</strong><span>Investigadora · UASD</span></div>
+            <span class="hilo-cat">Educación</span>
+          </div>
+          <div class="hilo-body">
+            <h3>Propongo una guía de aula para el taller de casabe de la Red de Museos</h3>
+            <p>Diseñé una secuencia didáctica de 45 minutos con el proceso de la yuca brava. La comparto en formato PDF para descargar.</p>
+          </div>
+          <div class="hilo-foot">
+            <span>💬 9 respuestas</span>
+            <span class="like">❤️ 27</span>
+            <span>🕘 Hace 1 día</span>
+          </div>
+        </div>
+
+        <div class="hilo" data-cat="gastronomia">
+          <div class="hilo-head">
+            <div class="avatar" style="background:#800C0C;">RD</div>
+            <div class="hilo-user"><strong>Rosa Delgado</strong><span>Chef · Santiago</span></div>
+            <span class="hilo-cat">Gastronomía</span>
+          </div>
+          <div class="hilo-body">
+            <h3>¿Conocían el guarapo de yuca? Un taller práctico de saberes taínos</h3>
+            <p>Organizo un taller gratuito en el Centro León sobre el uso del cibucán. Invito a docentes y curiosos de la región.</p>
+          </div>
+          <div class="hilo-foot">
+            <span>💬 17 respuestas</span>
+            <span class="like">❤️ 55</span>
+            <span>🕘 Hace 2 días</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="cargar-mas">Cargar más publicaciones</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Dominicana ViVa" class="logo-img" style="height:44px; width:auto;">
+        <p>Una comunidad que preserva, difunde y celebra la herencia cultural de Quisqueya.</p>
+        <span class="footer-subtag">QUISQUEYA · AYITI · BOHÍO</span>
+      </div>
+      <div class="footer-col">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Museo Digital</a></li>
+          <li><a href="museos.html">Red de Museos</a></li>
+          <li><a href="biblioteca.html">Biblioteca Digital</a></li>
+          <li><a href="index.html#mapa">Mapa Interactivo</a></li>
+          <li><a href="foro.html">Foro Comunitario</a></li>
+          <li><a href="Juegos.html">Juegos Educativos</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Museos Participantes</h4>
+        <ul>
+          <li><a href="museos.html">Museo del Hombre Dominicano</a></li>
+          <li><a href="museos.html">Museo de las Casas Reales</a></li>
+          <li><a href="museos.html">Museo Arqueológico Altos de Chavón</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.cat-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const cat = tab.dataset.cat;
+          document.querySelectorAll('.hilo').forEach(h => {
+            h.style.display = (cat === 'todas' || h.dataset.cat === cat) ? 'block' : 'none';
+          });
+        });
+      });
+    });
+
+    function publicar() {
+      const input = document.getElementById('newPostInput');
+      const text = input.value.trim();
+      if (!text) { alert('Escribe algo antes de publicar.'); return; }
+      const container = document.getElementById('hilosContainer');
+      const hilo = document.createElement('div');
+      hilo.className = 'hilo';
+      hilo.dataset.cat = 'todas';
+      hilo.innerHTML = `
+        <div class="hilo-head">
+          <div class="avatar" style="background:#C50F0F;">Y</div>
+          <div class="hilo-user"><strong>Visitante de Dominicana ViVa</strong><span>Miembro de la comunidad</span></div>
+          <span class="hilo-cat">Nueva</span>
+        </div>
+        <div class="hilo-body"><h3>${text}</h3></div>
+        <div class="hilo-foot"><span>💬 0 respuestas</span><span class="like">❤️ 0</span><span>🕘 Recién publicado</span></div>`;
+      container.prepend(hilo);
+      input.value = '';
+      alert('¡Publicación añadida al foro (demo)!');
+    }
+  </script>
+</body>
+</html>
+

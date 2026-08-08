@@ -1,0 +1,20 @@
+# Modelo original en alta resolución (respaldo, no usado por el sitio)
+3D/334f83d17c4ad7df905dc54cefb658ee.glb
+
+# Imágenes fuente duplicadas (ya renombradas en img/)
+img/imgs/
+
+# Sistemas
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node / dependencias
+node_modules/
+
+# Cachés y editor
+.vscode/
+.idea/
+*.log
+
+.vercel

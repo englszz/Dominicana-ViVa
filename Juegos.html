@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juegos Educativos | Dominicana ViVa</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --red-primary: #800C0C;
+      --red-bright: #C50F0F;
+      --navy-primary: #051342;
+      --bg-light: #FFFFFF;
+      --text-dark: #1E293B;
+      --font-main: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-main); background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background-color: var(--bg-light);
+      border-bottom: 1px solid #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; }
+    .logo-red { color: var(--red-bright); }
+    .logo-blue { color: var(--navy-primary); }
+
+    .nav-menu { display: flex; gap: 1.5rem; }
+    .nav-menu a { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 0.95rem; transition: color 0.2s ease; }
+    .nav-menu a:hover, .nav-menu a.active { color: var(--red-bright); }
+
+    /* SECCIÓN JUEGOS HERO */
+    .juegos-section { background-color: #FFF8F8; padding-bottom: 5rem; }
+
+    .juegos-hero {
+      position: relative;
+      min-height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(rgba(5, 19, 66, 0.7), rgba(128, 12, 12, 0.7)),
+                  url('img/image.png') center/cover no-repeat;
+    }
+
+    .juegos-hero-title { color: #FFFFFF; font-size: 3.5rem; font-weight: 800; line-height: 1.05; text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6); }
+
+    .juegos-container { max-width: 1050px; margin: 3rem auto 0; padding: 0 1.5rem; }
+
+    /* CONTROLES Y FILTROS */
+    .juegos-controls { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+    .search-box { flex: 1; min-width: 260px; }
+    .search-input { width: 100%; padding: 0.75rem 1.25rem; border-radius: 25px; border: 1px solid #E2E8F0; font-size: 0.95rem; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .filter-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-btn { background-color: #FFFFFF; border: 1px solid #E2E8F0; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; color: var(--text-dark); cursor: pointer; transition: all 0.2s ease; }
+    .filter-btn.active, .filter-btn:hover { background-color: var(--red-primary); color: #FFFFFF; border-color: var(--red-primary); }
+
+    /* GRID DE JUEGOS */
+    .juegos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 2rem; }
+    .card-juego { background-color: var(--navy-primary); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 8px 20px rgba(5, 19, 66, 0.18); transition: transform 0.25s ease, box-shadow 0.25s ease; position: relative; }
+    .card-juego:hover { transform: translateY(-6px); box-shadow: 0 14px 28px rgba(5, 19, 66, 0.28); }
+    
+    .badge-dificultad { position: absolute; top: 2rem; right: 2rem; background: rgba(255, 255, 255, 0.95); color: var(--navy-primary); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: 12px; text-transform: uppercase; z-index: 2; }
+
+    .card-img-wrapper { width: 100%; height: 220px; border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; background-color: #0A1E5C; }
+    .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-info { text-align: center; color: #FFFFFF; margin-bottom: 1.2rem; }
+    .card-info h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .card-info p { font-size: 0.88rem; opacity: 0.88; }
+
+    .btn-jugar { background-color: var(--red-bright); color: #FFFFFF; border: none; font-weight: 700; font-size: 0.95rem; padding: 0.7rem 2.5rem; border-radius: 20px; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; box-shadow: 0 3px 8px rgba(197, 15, 15, 0.3); }
+    .btn-jugar:hover { background-color: #A00C0C; transform: scale(1.03); }
+
+    /* MODAL DE JUEGO */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 19, 66, 0.85); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-card { background: #FFFFFF; border-radius: 16px; max-width: 650px; width: 92%; padding: 2rem; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: center; }
+    .close-modal { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.8rem; background: none; border: none; cursor: pointer; color: var(--text-dark); }
+    .modal-card h3 { color: var(--navy-primary); font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .modal-card p { font-size: 0.95rem; color: #64748B; margin-bottom: 1.2rem; }
+    
+    .game-container { width: 100%; min-height: 320px; background-color: #F8FAFC; border-radius: 12px; padding: 1.5rem; border: 1px solid #E2E8F0; margin-bottom: 1.2rem; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+    /* ESTILOS DE LOS JUEGOS */
+    /* Trivia */
+    .trivia-box { width: 100%; }
+    .trivia-question { font-size: 1.1rem; font-weight: 700; color: var(--navy-primary); margin-bottom: 1rem; }
+    .trivia-options { display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
+    .trivia-btn { background: #FFFFFF; border: 2px solid #E2E8F0; padding: 0.75rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-align: left; }
+    .trivia-btn:hover { border-color: var(--navy-primary); background-color: #F1F5F9; }
+    .trivia-btn.correct { background-color: #22C55E !important; color: white; border-color: #22C55E !important; }
+    .trivia-btn.wrong { background-color: #EF4444 !important; color: white; border-color: #EF4444 !important; }
+
+    /* Memoria */
+    .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; width: 100%; max-width: 400px; }
+    .memory-card { height: 80px; background-color: var(--navy-primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; color: white; user-select: none; transition: transform 0.3s ease; }
+    .memory-card.flipped { background-color: var(--red-primary); }
+
+    /* Sopa de Letras */
+    .word-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 1rem; }
+    .word-cell { width: 40px; height: 40px; background: #FFFFFF; border: 1px solid #CBD5E1; display: flex; align-items: center; justify-content: center; font-weight: 700; text-transform: uppercase; border-radius: 6px; cursor: pointer; }
+    .word-cell.selected { background-color: var(--red-bright); color: white; }
+    .word-list { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--navy-primary); }
+    .word-item.found { text-decoration: line-through; opacity: 0.5; }
+
+    /* Mapa y Verdadero/Falso */
+    .map-list, .vf-box { width: 100%; display: flex; flex-direction: column; gap: 0.8rem; }
+    .map-item { background: white; padding: 0.8rem; border-radius: 8px; border: 1px solid #CBD5E1; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+    .map-select { padding: 0.4rem; border-radius: 6px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 0.85rem; }
+
+    /* FOOTER */
+    .footer { background-color: var(--navy-primary); color: #FFFFFF; padding: 3rem 5% 1.5rem; }
+    .footer-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    .footer-brand .logo { font-size: 1.4rem; }
+    .footer-brand p { font-size: 0.85rem; color: #CBD5E1; margin: 0.75rem 0 1rem; max-width: 280px; }
+    .footer-subtag { font-size: 0.75rem; color: #94A3B8; font-weight: 700; letter-spacing: 0.05em; }
+    .footer-col h4 { font-size: 0.95rem; margin-bottom: 0.8rem; color: #FFFFFF; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.4rem; }
+    .footer-col a { color: #CBD5E1; text-decoration: none; font-size: 0.85rem; }
+    .footer-col a:hover { color: #FFFFFF; }
+
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .juegos-grid { grid-template-columns: 1fr; }
+      .footer-content { grid-template-columns: 1fr; }
+      .memory-card { height: 65px; font-size: 1.4rem; }
+      .word-cell { width: 32px; height: 32px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="index.html" class="logo" style="display:flex; align-items:center; gap:0.6rem;">
+      <img src="img/logo.png" alt="Dominicana ViVa" style="height:44px; width:auto;">
+      <span><span class="logo-red">Dominicana</span> <span class="logo-blue">ViVa</span></span>
+    </a>
+    <nav class="nav-menu">
+      <a href="index.html">Museo Digital</a>
+      <a href="museos.html">Red de Museos</a>
+      <a href="biblioteca.html">Biblioteca</a>
+      <a href="index.html#mapa">Mapa Interactivo</a>
+      <a href="foro.html">Foro</a>
+      <a href="Juegos.html" class="active">Juegos</a>
+    </nav>
+  </header>
+
+  <!-- SECCIÓN JUEGOS -->
+  <section class="juegos-section">
+    <div class="juegos-hero">
+      <h1 class="juegos-hero-title">Juegos<br>Educativos</h1>
+    </div>
+
+    <div class="juegos-container">
+      <div class="juegos-controls">
+        <div class="search-box">
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar un juego o trivia...">
+        </div>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="trivia">Trivias</button>
+          <button class="filter-btn" data-filter="memoria">Memoria</button>
+          <button class="filter-btn" data-filter="palabras">Palabras</button>
+          <button class="filter-btn" data-filter="mapa">Geografía</button>
+        </div>
+      </div>
+
+      <div class="juegos-grid" id="juegosGrid">
+        
+        <!-- Juego 1: Trivia -->
+        <div class="card-juego" data-category="trivia" data-game-type="trivia" data-title="Desafío de la Cosmovisión" data-desc="Preguntas sobre los dioses, la vida y las tradiciones taínas en la Quisqueya precolombina.">
+          <span class="badge-dificultad">Fácil</span>
+          <div class="card-img-wrapper">
+            <img src="img/image.png" alt="Cultura Arqueológica">
+          </div>
+          <div class="card-info">
+            <h3>Trivia: Cosmovisión Taína</h3>
+            <p>Aprende sobre cacicazgos, dioses y rituales sagrados.</p>
+          </div>
+          <button class="btn-jugar" onclick="openGameModal(this)">¡Jugar Ahora!</button>
+        </div>
+
+        <!-- Juego 2: Memoria -->
+        <div class="card-juego" data-category="memoria" data-game-type="memoria" data-title="Memoria de Símbolos" data-desc="Empareja las vasijas, herramientas y petroglifos precolombinos en el menor número de intentos.">
+          <span class="badge-dificultad">Medio</span>
+          <div class="card-img-wrapper">
+            <img src="img/{E6447264-4C60-45B0-B47C-116005103DF8}.png" alt="Cerámica Antigua">
+          </div>
+          <div class="card-info">
+            <h3>Memoria de Arte y Petroglifos</h3>
+            <p>Empareja los iconos de artefactos y piezas históricas.</p>
+          </div>
+          <button class="btn-jugar" onclick="openGameModal(this)">¡Jugar Ahora!</button>
+        </div>
+
+        <!-- Juego 3: Sopa de Letras -->
+        <div class="card-juego" data-category="palabras" data-game-type="sopa" data-title="Sopa de Letras Arawak" data-desc="Identifica las palabras indígenas que han perdurado en el español que hablamos hoy.">
+          <span class="badge-dificultad">Fácil</span>
+          <div class="card-img-wrapper">
+            <img src="img/image copy.png" alt="Lectura y Palabras">
+          </div>
+          <div class="card-info">
+            <h3>Sopa de Letras Arawak</h3>
+            <p>Encuentra términos como hamaca, canoa, bohío y cazabe.</p>
+          </div>
+          <button class="btn-jugar" onclick="openGameModal(this)">¡Jugar Ahora!</button>
+        </div>
+
+        <!-- Juego 4: Cacicazgos (Nuevo) -->
+        <div class="card-juego" data-category="mapa" data-game-type="cacicazgos" data-title="Los 5 Cacicazgos" data-desc="Relaciona cada Cacique histórico con el Cacicazgo territorial que gobernaba.">
+          <span class="badge-dificultad">Medio</span>
+          <div class="card-img-wrapper">
+            <img src="img/{E6447264-4C60-45B0-B47C-116005103DF8}.png" alt="Mapa Antiguo">
+          </div>
+          <div class="card-info">
+            <h3>Territorios y Caciques</h3>
+            <p>Empareja a Guarionex, Anacaona, Bohechío, Caonabo y Cayacoa.</p>
+          </div>
+          <button class="btn-jugar" onclick="openGameModal(this)">¡Jugar Ahora!</button>
+        </div>
+
+        <!-- Juego 5: Mitos Falso o Verdadero (Nuevo) -->
+        <div class="card-juego" data-category="trivia" data-game-type="vf" data-title="Verdadero o Falso Histórico" data-desc="Demuestra qué tanto conoces sobre los mitos y realidades de los pobladores originarios.">
+          <span class="badge-dificultad">Fácil</span>
+          <div class="card-img-wrapper">
+            <img src="img/{384FC01D-7D38-4B77-B823-7F1F86DCCD24}.png" alt="Historia y Documentos">
+          </div>
+          <div class="card-info">
+            <h3>Verdadero o Falso</h3>
+            <p>Desmiente mitos y valida datos históricos de Quisqueya.</p>
+          </div>
+          <button class="btn-jugar" onclick="openGameModal(this)">¡Jugar Ahora!</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL DE JUEGO -->
+  <div class="modal-overlay" id="gameModalOverlay">
+    <div class="modal-card">
+      <button class="close-modal" onclick="closeGameModal()">&times;</button>
+      <h3 id="modalGameTitle">Título del Juego</h3>
+      <p id="modalGameDesc">Instrucciones o descripción del minijuego...</p>
+      
+      <div class="game-container" id="gameContainer">
+        <!-- El contenido dinámico de cada juego se renderiza aquí -->
+      </div>
+
+      <button class="btn-jugar" style="background-color: var(--navy-primary);" onclick="closeGameModal()">Salir del Juego</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo" style="display:flex; align-items:center;">
+          <img src="img/logo.png" alt="Dominicana ViVa" style="height:44px; width:auto;">
+        </div>
+        <p>Un proyecto dedicado a preservar, difundir y celebrar la herencia cultural taína como fundamento de la identidad dominicana.</p>
+        <span class="footer-subtag">QUISQUEYA · AYITI · BOHÍO</span>
+      </div>
+
+      <div class="footer-col">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="index.html">Museo Digital</a></li>
+          <li><a href="museos.html">Red de Museos</a></li>
+          <li><a href="index.html#mapa">Mapa Interactivo</a></li>
+          <li><a href="biblioteca.html">Biblioteca Digital</a></li>
+          <li><a href="foro.html">Foro Comunitario</a></li>
+          <li><a href="Juegos.html">Juegos Educativos</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Museos Participantes</h4>
+        <ul>
+          <li><a href="#">Museo del Hombre Dominicano</a></li>
+          <li><a href="#">Museo de las Casas Reales</a></li>
+          <li><a href="#">Museo Arqueológico Altos de Chavón</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* CONTROL DE FILTROS Y BÚSQUEDA */
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById('searchInput');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const games = document.querySelectorAll('.card-juego');
+
+      function filterGames() {
+        const query = searchInput.value.toLowerCase();
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+        games.forEach(game => {
+          const title = game.dataset.title.toLowerCase();
+          const desc = game.dataset.desc.toLowerCase();
+          const category = game.dataset.category;
+
+          const matchesSearch = title.includes(query) || desc.includes(query);
+          const matchesCategory = activeFilter === 'all' || category === activeFilter;
+
+          if (matchesSearch && matchesCategory) {
+            game.style.display = 'flex';
+          } else {
+            game.style.display = 'none';
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterGames);
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterGames();
+        });
+      });
+    });
+
+    /* MANEJO DEL MODAL Y CARGA DE JUEGOS */
+    function openGameModal(btn) {
+      const card = btn.closest('.card-juego');
+      const gameType = card.dataset.gameType;
+      
+      document.getElementById('modalGameTitle').textContent = card.dataset.title;
+      document.getElementById('modalGameDesc').textContent = card.dataset.desc;
+      
+      const container = document.getElementById('gameContainer');
+      container.innerHTML = '';
+
+      if (gameType === 'trivia') loadTriviaGame(container);
+      else if (gameType === 'memoria') loadMemoryGame(container);
+      else if (gameType === 'sopa') loadWordSearchGame(container);
+      else if (gameType === 'cacicazgos') loadCacicazgosGame(container);
+      else if (gameType === 'vf') loadVFGame(container);
+
+      document.getElementById('gameModalOverlay').classList.add('active');
+    }
+
+    function closeGameModal() {
+      document.getElementById('gameModalOverlay').classList.remove('active');
+      document.getElementById('gameContainer').innerHTML = '';
+    }
+
+    /* 1. TRIVIA */
+    const triviaData = [
+      { question: "¿Cómo llamaban los taínos a la isla de Santo Domingo?", options: ["Quisqueya", "Borinquen", "Cuba", "Zemí"], correct: 0 },
+      { question: "¿Quién era el líder político y militar de un cacicazgo?", options: ["Bohíque", "Nitaíno", "Cacique", "Naboría"], correct: 2 },
+      { question: "¿Qué representan las esculturas talladas llamadas Zemíes?", options: ["Canoas", "Dioses y ancestros", "Viviendas", "Armas de caza"], correct: 1 }
+    ];
+    let currentQuestion = 0;
+
+    function loadTriviaGame(container) {
+      currentQuestion = 0;
+      renderQuestion(container);
+    }
+
+    function renderQuestion(container) {
+      if (currentQuestion >= triviaData.length) {
+        container.innerHTML = `<h3>¡Excelente! 🎉</h3><p style="margin-top:0.5rem;">Has contestado correctamente todas las preguntas.</p><button class="btn-jugar" style="margin-top:1rem;" onclick="loadTriviaGame(document.getElementById('gameContainer'))">Repetir Trivia</button>`;
+        return;
+      }
+      const q = triviaData[currentQuestion];
+      let optionsHTML = q.options.map((opt, i) => `<button class="trivia-btn" onclick="checkTriviaAnswer(${i}, ${q.correct}, this)">${opt}</button>`).join('');
+      container.innerHTML = `<div class="trivia-box"><div class="trivia-question">Pregunta ${currentQuestion + 1} de ${triviaData.length}:<br>${q.question}</div><div class="trivia-options">${optionsHTML}</div></div>`;
+    }
+
+    function checkTriviaAnswer(selected, correct, btn) {
+      const allBtns = btn.parentElement.querySelectorAll('.trivia-btn');
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+      if (selected === correct) btn.classList.add('correct');
+      else {
+        btn.classList.add('wrong');
+        allBtns[correct].classList.add('correct');
+      }
+      setTimeout(() => { currentQuestion++; renderQuestion(document.getElementById('gameContainer')); }, 1400);
+    }
+
+    /* 2. JUEGO DE MEMORIA */
+    const memoryIcons = ['🏹', '☀️', '🏺', '🗿', '🏹', '☀️', '🏺', '🗿'];
+    let flippedCards = [], matchedPairs = 0;
+
+    function loadMemoryGame(container) {
+      flippedCards = []; matchedPairs = 0;
+      const shuffled = [...memoryIcons].sort(() => 0.5 - Math.random());
+      let gridHTML = shuffled.map((icon, index) => `<div class="memory-card" data-icon="${icon}" onclick="flipCard(this)">❓</div>`).join('');
+      container.innerHTML = `<div class="memory-grid">${gridHTML}</div>`;
+    }
+
+    function flipCard(card) {
+      if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+        card.classList.add('flipped');
+        card.textContent = card.dataset.icon;
+        flippedCards.push(card);
+        if (flippedCards.length === 2) setTimeout(checkMemoryMatch, 800);
+      }
+    }
+
+    function checkMemoryMatch() {
+      const [c1, c2] = flippedCards;
+      if (c1.dataset.icon === c2.dataset.icon) {
+        matchedPairs++;
+        if (matchedPairs === memoryIcons.length / 2) {
+          document.getElementById('gameContainer').innerHTML = `<h3>¡Ganaste! 🧠</h3><p style="margin-top:0.5rem;">Encontraste todos los pares de piezas arqueológicas.</p><button class="btn-jugar" style="margin-top:1rem;" onclick="loadMemoryGame(document.getElementById('gameContainer'))">Jugar Otra Vez</button>`;
+        }
+      } else {
+        c1.classList.remove('flipped'); c2.classList.remove('flipped');
+        c1.textContent = '❓'; c2.textContent = '❓';
+      }
+      flippedCards = [];
+    }
+
+    /* 3. SOPA DE LETRAS */
+    const board = [['B','O','H','I','O','X'],['A','M','A','C','A','Y'],['C','A','N','O','A','Z'],['C','A','Z','A','B','E']];
+    const targetWords = ['BOHIO', 'AMACA', 'CANOA', 'CAZABE'];
+
+    function loadWordSearchGame(container) {
+      let gridHTML = '';
+      for (let r = 0; r < board.length; r++) {
+        for (let c = 0; c < board[r].length; c++) {
+          gridHTML += `<div class="word-cell" onclick="this.classList.toggle('selected')">${board[r][c]}</div>`;
+        }
+      }
+      let wordsListHTML = targetWords.map(w => `<span class="word-item" id="word-${w}">${w}</span>`).join(' • ');
+      container.innerHTML = `<div class="word-grid">${gridHTML}</div><div class="word-list">${wordsListHTML}</div><button class="btn-jugar" style="margin-top:1rem; padding:0.4rem 1.5rem; font-size:0.85rem;" onclick="checkWordSearch()">Comprobar</button>`;
+    }
+
+    function checkWordSearch() {
+      targetWords.forEach(w => { const el = document.getElementById(`word-${w}`); if (el) el.classList.add('found'); });
+      setTimeout(() => {
+        document.getElementById('gameContainer').innerHTML = `<h3>¡Excelente Trabajo! 📚</h3><p style="margin-top:0.5rem;">Identificaste todas las palabras arawakas.</p><button class="btn-jugar" style="margin-top:1rem;" onclick="loadWordSearchGame(document.getElementById('gameContainer'))">Reiniciar</button>`;
+      }, 900);
+    }
+
+    /* 4. JUEGO DE CACICAZGOS */
+    const caciquesData = [
+      { cacique: "Guarionex", territorio: "Maguá" },
+      { cacique: "Anacaona / Bohechío", territorio: "Jaragua" },
+      { cacique: "Caonabo", territorio: "Maguana" },
+      { cacique: "Cayacoa", territorio: "Higüey" }
+    ];
+
+    function loadCacicazgosGame(container) {
+      let html = `<div class="map-list">`;
+      caciquesData.forEach((item, index) => {
+        html += `
+          <div class="map-item">
+            <span>Cacique: ${item.cacique}</span>
+            <select class="map-select" id="cacique-sel-${index}">
+              <option value="">Selecciona territorio...</option>
+              <option value="Maguá">Maguá</option>
+              <option value="Jaragua">Jaragua</option>
+              <option value="Maguana">Maguana</option>
+              <option value="Higüey">Higüey</option>
+            </select>
+          </div>`;
+      });
+      html += `</div><button class="btn-jugar" style="margin-top:1rem; padding:0.5rem 1.8rem;" onclick="checkCacicazgos()">Verificar Mapa</button>`;
+      container.innerHTML = html;
+    }
+
+    function checkCacicazgos() {
+      let correctCount = 0;
+      caciquesData.forEach((item, index) => {
+        const val = document.getElementById(`cacique-sel-${index}`).value;
+        if (val === item.territorio) correctCount++;
+      });
+
+      if (correctCount === caciquesData.length) {
+        document.getElementById('gameContainer').innerHTML = `<h3>¡Territorio Dominado! 🗺️</h3><p style="margin-top:0.5rem;">Asignaste correctamente todos los caciques a sus cacicazgos.</p><button class="btn-jugar" style="margin-top:1rem;" onclick="loadCacicazgosGame(document.getElementById('gameContainer'))">Jugar Otra Vez</button>`;
+      } else {
+        alert(`Tienes ${correctCount} de ${caciquesData.length} correctos. ¡Inténtalo de nuevo!`);
+      }
+    }
+
+    /* 5. VERDADERO O FALSO */
+    const vfData = [
+      { statement: "Los taínos construían viviendas circulares llamadas Caneyes para los caciques y Bohíos para el pueblo.", answer: false, explanation: "¡Es al revés! El Caney era rectangular para el cacique y el Bohío circular para el pueblo." },
+      { statement: "El 'Casabe' es un pan crujiente elaborado a partir de la yuca amarga.", answer: true, explanation: "¡Correcto! Extraían el jugo tóxico de la yuca con el sebucán para crear la harina de casabe." }
+    ];
+    let vfIndex = 0;
+
+    function loadVFGame(container) {
+      vfIndex = 0;
+      renderVF(container);
+    }
+
+    function renderVF(container) {
+      if (vfIndex >= vfData.length) {
+        container.innerHTML = `<h3>¡Desafío Completado! 📜</h3><p style="margin-top:0.5rem;">Has demostrado un gran dominio de la verdad histórica.</p><button class="btn-jugar" style="margin-top:1rem;" onclick="loadVFGame(document.getElementById('gameContainer'))">Reiniciar</button>`;
+        return;
+      }
+      const item = vfData[vfIndex];
+      container.innerHTML = `
+        <div class="vf-box">
+          <p style="font-size:1.05rem; font-weight:700; color:var(--navy-primary);">${item.statement}</p>
+          <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem;">
+            <button class="btn-jugar" style="background-color:#22C55E;" onclick="checkVF(true)">Verdadero</button>
+            <button class="btn-jugar" style="background-color:#EF4444;" onclick="checkVF(false)">Falso</button>
+          </div>
+        </div>`;
+    }
+
+    function checkVF(userChoice) {
+      const item = vfData[vfIndex];
+      const container = document.getElementById('gameContainer');
+      if (userChoice === item.answer) {
+        container.innerHTML = `<h3 style="color:#22C55E;">¡Correcto! ✅</h3><p style="margin-top:0.5rem;">${item.explanation}</p>`;
+      } else {
+        container.innerHTML = `<h3 style="color:#EF4444;">Incorrecto ❌</h3><p style="margin-top:0.5rem;">${item.explanation}</p>`;
+      }
+      setTimeout(() => { vfIndex++; renderVF(document.getElementById('gameContainer')); }, 2200);
+    }
+  </script>
+</body>
+</html>
